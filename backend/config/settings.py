@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -61,6 +62,14 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer"
     ],
 }
+
+ALLOWED_HOSTS = "localhost,127.0.0.1".split(",")
+ALLOWED_ORIGINS = "http://localhost:3000,https://localhost:3000".split(",")
+
+
+CORS_ALLOWED_ORIGINS = [f"http://{host}" for host in ALLOWED_HOSTS]
+CORS_ALLOWED_ORIGINS.extend(ALLOWED_ORIGINS)
+# CORS_ALLOWED_ORIGINS.extend([f"{origin}" for origin in ALLOWED_ORIGINS])
 
 ROOT_URLCONF = 'config.urls'
 

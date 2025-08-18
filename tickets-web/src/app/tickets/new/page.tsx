@@ -2,33 +2,26 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createTicket } from "@/lib/tickets";
+import { useCreateTicket } from "@/hooks/useTickets";
 
 export default function NewTicketPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState(3);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const { create, submitting, error, resetError } = useCreateTicket({
+    onSuccess: () => router.push("/tickets"),
+  });
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitting(true);
-    setError(null);
-    try {
-      await createTicket({
-        title,
-        description,
-        status: "open",
-        priority,
-      });
-      router.push("/tickets");
-    } catch (err: any) {
-      setError(err.message || "Failed to create ticket");
-    } finally {
-      setSubmitting(false);
-    }
+    await create({
+      title,
+      description,
+      status: "open",
+      priority,
+    } as any);
   }
 
   return (
@@ -45,8 +38,15 @@ export default function NewTicketPage() {
         className="space-y-8 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900/70 shadow-sm p-8"
       >
         {error && (
-          <div className="rounded-md border border-red-300 bg-red-50 dark:bg-red-900/30 px-4 py-3 text-sm text-red-700 dark:text-red-200">
-            {error}
+          <div className="rounded-md border border-red-300 bg-red-50 dark:bg-red-900/30 px-4 py-3 text-sm text-red-700 dark:text-red-200 flex justify-between gap-4">
+            <span>{error}</span>
+            <button
+              type="button"
+              onClick={resetError}
+              className="text-xs underline decoration-dotted hover:opacity-80"
+            >
+              dismiss
+            </button>
           </div>
         )}
 
@@ -54,14 +54,14 @@ export default function NewTicketPage() {
           <label className="block text-sm font-medium">
             Title <span className="text-red-500">*</span>
           </label>
-          <input
-            className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            placeholder="Short, descriptive summary"
-            required
-            maxLength={200}
-          />
+            <input
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              placeholder="Short, descriptive summary"
+              required
+              maxLength={200}
+            />
         </div>
 
         <div className="space-y-2">
@@ -72,9 +72,7 @@ export default function NewTicketPage() {
             onChange={e => setDescription(e.target.value)}
             placeholder="Steps to reproduce, expected vs actual, screenshots, etc."
           />
-          <p className="text-xs text-gray-500">
-            Optional. Markdown not yet supported.
-          </p>
+          <p className="text-xs text-gray-500">Optional. Markdown not yet supported.</p>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2">
@@ -91,9 +89,7 @@ export default function NewTicketPage() {
               <option value={4}>4 – Low</option>
               <option value={5}>5 – Trivial</option>
             </select>
-            <p className="text-xs text-gray-500">
-              Lower number means higher urgency.
-            </p>
+            <p className="text-xs text-gray-500">Lower number means higher urgency.</p>
           </div>
           <div className="space-y-2">
             <label className="block text-sm font-medium">Status</label>

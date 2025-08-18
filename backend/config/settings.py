@@ -26,8 +26,16 @@ SECRET_KEY = 'django-insecure-mk%lp7^@9ey53xvcyv2b*z(tlr^ez80)m)wfis#t$=6x3v1tmk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
 
 # Application definition
 
@@ -45,6 +53,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -56,20 +65,13 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer"
     ],
 }
-
-# ALLOWED_HOSTS = "localhost,127.0.0.1".split(",")
-# ALLOWED_ORIGINS = "http://localhost:3000,https://localhost:3000".split(",")
-
-
-# CORS_ALLOWED_ORIGINS = [f"http://{host}" for host in ALLOWED_HOSTS]
-# CORS_ALLOWED_ORIGINS.extend(ALLOWED_ORIGINS)
-# CORS_ALLOWED_ORIGINS.extend([f"{origin}" for origin in ALLOWED_ORIGINS])
 
 ROOT_URLCONF = 'config.urls'
 

@@ -1,11 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  trailingSlash: true,
   async rewrites() {
     return [
       {
-        source: "/api/:path*",
-        destination: "http://127.0.0.1:8000/api/:path*", // Django backend
+        source: "/api/:path*/",
+        destination: "http://127.0.0.1:8000/api/:path*/",
       },
     ];
   },

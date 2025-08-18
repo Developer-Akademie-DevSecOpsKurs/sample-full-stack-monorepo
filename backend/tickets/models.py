@@ -13,6 +13,7 @@ class Ticket(models.Model):
     description = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.OPEN)
     priority = models.PositiveSmallIntegerField(default=3)  # 1=high, 5=low
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

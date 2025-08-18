@@ -8,7 +8,9 @@ class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     permission_classes = [AllowAny]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        filters.SearchFilter, filters.OrderingFilter
+    ]
     search_fields = ["title", "description", "status"]
     ordering_fields = ["created_at", "updated_at", "priority"]
 

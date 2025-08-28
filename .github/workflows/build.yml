@@ -8,6 +8,11 @@ on:
   # trigger that allows for manually starting the workflow
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
+
 jobs:
 
   build-container-image:

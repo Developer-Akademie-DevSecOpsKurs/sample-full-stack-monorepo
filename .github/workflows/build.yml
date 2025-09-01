@@ -85,7 +85,7 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # ghcr.io/developer-akademie-devsecopskurs/sample-full-stack-monorepo/ticket-backend:latest
           tags: |
             ${{ env.IMAGE_REPO }}/${{ matrix.service.name }}:${{ github.sha }}
-            # ghcr.io/developer-akademie-devsecopskurs/sample-full-stack-monorepo/ticket-backend:latest
             ${{ env.IMAGE_REPO }}/${{ matrix.service.name }}:latest

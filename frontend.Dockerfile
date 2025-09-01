@@ -34,11 +34,14 @@ CMD ["npm","run","dev"]
 FROM base AS prod
 RUN apk update && apk upgrade && apk add --no-cache libc6-compat
 WORKDIR /app
+# Setup env-vars
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+
 # Non-root user
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
+
 # Copy only runtime artifacts (standalone build) + static assets
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./

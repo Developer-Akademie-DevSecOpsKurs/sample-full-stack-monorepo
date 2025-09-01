@@ -45,4 +45,15 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/${{ env.IMAGE_OWNER }}/sample-full-stack-monorepo:latest
+            ghcr.io/${{ env.IMAGE_OWNER }}/sample-full-stack-monorepo/ticket-backend:latest
+      
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v6
+        env:
+          IMAGE_OWNER: developer-akademie-devsecopskurs
+        with:
+          file: frontend.Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ env.IMAGE_OWNER }}/sample-full-stack-monorepo/ticket-frontend:latest

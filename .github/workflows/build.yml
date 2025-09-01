@@ -18,7 +18,23 @@ jobs:
   build-container-image:
     name: container-automation
     runs-on: ubuntu-latest
-    
+
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          # Passe context/file ggf. an deine Ordnerstruktur an
+          - name: ticket-backend
+            context: .
+            # nutzt default "Dockerfile"
+            file: Dockerfile
+          - name: ticket-frontend
+            context: .
+            file: frontend.Dockerfile
+    env:
+      IMAGE_OWNER: developer-akademie-devsecopskurs
+
+
     steps:
       - name: dummy step
         run: |
@@ -38,9 +54,8 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and push backend image
+        if: false
         uses: docker/build-push-action@v6
-        env:
-          IMAGE_OWNER: developer-akademie-devsecopskurs
         with:
           platforms: linux/amd64,linux/arm64
           push: true
@@ -48,12 +63,29 @@ jobs:
             ghcr.io/${{ env.IMAGE_OWNER }}/sample-full-stack-monorepo/ticket-backend:latest
       
       - name: Build and push frontend image
+        if: false
         uses: docker/build-push-action@v6
-        env:
-          IMAGE_OWNER: developer-akademie-devsecopskurs
         with:
           file: frontend.Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ghcr.io/${{ env.IMAGE_OWNER }}/sample-full-stack-monorepo/ticket-frontend:latest
+
+      ## New build with matrix
+      - name: Build & push ${{ matrix.service.name }}
+        uses: docker/build-push-action@v6
+        env:
+          IMAGE_OWNER: developer-akademie-devsecopskurs
+          IMAGE_REPO: ghcr.io/${{ env.IMAGE_OWNER }}/sample-full-stack-monorepo
+        with:
+          context: ${{ matrix.service.context }}
+          file: ${{ matrix.service.file || 'Dockerfile' }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: |
+            ${{ env.IMAGE_REPO }}/${{ matrix.service.name }}:${{ github.sha }}
+            # ghcr.io/developer-akademie-devsecopskurs/sample-full-stack-monorepo/ticket-backend:latest
+            ${{ env.IMAGE_REPO }}/${{ matrix.service.name }}:latest

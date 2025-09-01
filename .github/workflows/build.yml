@@ -7,7 +7,6 @@ on:
     - main
   # trigger that allows for manually starting the workflow
   workflow_dispatch:
-
 permissions:
   contents: read
   packages: write
@@ -36,9 +35,20 @@ jobs:
 
 
     steps:
-      - name: dummy step
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: List files for debugging
         run: |
-          echo "hello from pipeline"
+          echo "DEBUGGING OUTPUT: Root directory"
+          ls -al
+          echo "DEBUGGING OUTPUT: .github/workflows directory"
+          ls -al .github/workflows
+          echo "DEBUGGING OUTPUT: Backend directory"
+          ls -al backend
+          echo "DEBUGGING OUTPUT: Frontend Dockerfile (if exists)"
+          if [ -f frontend.Dockerfile ]; then cat frontend.Dockerfile; else echo "frontend.Dockerfile not found"; fi
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3

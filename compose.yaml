@@ -1,0 +1,23 @@
+services:
+  backend:
+    container_name: tickets-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: backend_repo/my_backend_image:${BACKEND_VERSION}
+    environment:
+      DJANGO_SUPERUSER_USERNAME: admin
+      DJANGO_SUPERUSER_EMAIL: admin@mail.com
+      DJANGO_SUPERUSER_PASSWORD: admin1234
+    env_file:
+      - backend.env
+    ports:
+      - "8000:8000"
+
+  frontend:
+    container_name: tickets-client
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    ports:
+      - "8001:3000"

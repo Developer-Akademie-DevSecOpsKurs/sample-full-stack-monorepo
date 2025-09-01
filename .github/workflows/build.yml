@@ -30,7 +30,7 @@ jobs:
             file: Dockerfile
           - name: ticket-frontend
             context: .
-            file: frontend.Dockerfile
+            file: ./frontend.Dockerfile
     env:
       IMAGE_OWNER: developer-akademie-devsecopskurs
 
@@ -61,6 +61,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.IMAGE_OWNER }}/sample-full-stack-monorepo/ticket-backend:latest
+
       
       - name: Build and push frontend image
         if: false
